@@ -18,11 +18,13 @@ impl Random {
 }
 
 impl RandomTrait for Random {
+    // return an integer between low and high inclusive
     fn gen_range(&mut self, low: u8, high: u8) -> u8 {
         let rand = if low == high {
             low
         } else {
-            rand::thread_rng().gen_range(low, high)
+            // high + 1 because gen_range return in [low, high)
+            rand::thread_rng().gen_range(low, high + 1)
         };
 
         trace!("gen_range({}, {}) = {}", low, high, rand);
