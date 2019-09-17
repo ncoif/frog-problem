@@ -1,7 +1,9 @@
+extern crate chrono;
 extern crate rand;
 
 mod random;
 
+use log::{debug, info, trace};
 use random::Random;
 use random::RandomTrait;
 
@@ -9,8 +11,24 @@ static SIZE: u8 = 10;
 static TOTAL_RUNS: u32 = 100_000;
 
 fn main() {
+    fern::Dispatch::new()
+        .format(|out, message, record| {
+            out.finish(format_args!(
+                "{} - {} - {}",
+                chrono::Local::now().format("%Y-%m-%d %H:%M:%S%.3f %z"),
+                record.level(),
+                message
+            ))
+        })
+        .level(log::LevelFilter::Debug)
+        .chain(std::io::stdout())
+        .apply()
+        .expect("Failed to initialize logging");
+    debug!("Logging initialized");
+
     let mut rnd = Random::new();
 
+    info!("Computing average for {} runs...", TOTAL_RUNS);
     let (average, _): (f64, u64) = (0..TOTAL_RUNS)
         .map(|_| frog_run(&mut rnd, SIZE))
         .map(u64::from)
@@ -20,7 +38,7 @@ fn main() {
                 count + 1,
             )
         });
-    println!("Average for {} runs: {}", TOTAL_RUNS, average);
+    info!("Average for {} runs: {}", TOTAL_RUNS, average);
 }
 
 // return the number of hops for a single run
@@ -34,6 +52,7 @@ fn frog_run(rnd: &mut dyn RandomTrait, size: u8) -> u8 {
         remaining_distance -= next_hop;
     }
 
+    trace!("frog_run took {} hops", number_hops);
     number_hops
 }
 
