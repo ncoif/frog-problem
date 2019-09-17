@@ -14,7 +14,7 @@ fn main() {
     fern::Dispatch::new()
         .format(|out, message, record| {
             out.finish(format_args!(
-                "{} - {} - {}",
+                "{: <29} - {: <5} - {}",
                 chrono::Local::now().format("%Y-%m-%d %H:%M:%S%.3f %z"),
                 record.level(),
                 message
