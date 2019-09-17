@@ -36,3 +36,50 @@ fn frog_run(rnd: &mut dyn RandomTrait, size: u8) -> u8 {
 
     number_hops
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use mockers::matchers::ANY;
+    use mockers::Scenario;
+
+    #[test]
+    fn test_frog_run_random_10() {
+        let scenario = Scenario::new();
+        let (mut cond, cond_handle) = scenario.create_mock_for::<dyn RandomTrait>();
+
+        scenario.expect(cond_handle.gen_range(1, 10).and_return_clone(10).times(1));
+
+        assert_eq!(1, frog_run(&mut cond, 10));
+    }
+
+    #[test]
+    fn test_frog_run_random_1() {
+        let scenario = Scenario::new();
+        let (mut cond, cond_handle) = scenario.create_mock_for::<dyn RandomTrait>();
+
+        scenario.expect(cond_handle.gen_range(1, ANY).and_return_clone(1).times(10));
+
+        assert_eq!(10, frog_run(&mut cond, 10));
+    }
+
+    #[test]
+    fn test_frog_run_random_2() {
+        let scenario = Scenario::new();
+        let (mut cond, cond_handle) = scenario.create_mock_for::<dyn RandomTrait>();
+
+        scenario.expect(cond_handle.gen_range(1, ANY).and_return_clone(2).times(5));
+
+        assert_eq!(5, frog_run(&mut cond, 10));
+    }
+
+    #[test]
+    fn test_frog_run_random_5() {
+        let scenario = Scenario::new();
+        let (mut cond, cond_handle) = scenario.create_mock_for::<dyn RandomTrait>();
+
+        scenario.expect(cond_handle.gen_range(1, ANY).and_return_clone(5).times(2));
+
+        assert_eq!(2, frog_run(&mut cond, 10));
+    }
+}

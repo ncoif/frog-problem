@@ -8,3 +8,7 @@ edition = "2018"
 
 [dependencies]
 rand = "0.7"
+
+[dev-dependencies]
+mockers = "0.21"
+mockers_derive = "0.21"

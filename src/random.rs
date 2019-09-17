@@ -1,5 +1,9 @@
+#[cfg(test)]
+use mockers_derive::mocked;
+
 use rand::Rng;
 
+#[cfg_attr(test, mocked)]
 pub trait RandomTrait {
     fn gen_range(&mut self, low: u8, high: u8) -> u8;
 }
